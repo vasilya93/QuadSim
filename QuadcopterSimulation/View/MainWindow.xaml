@@ -1,0 +1,200 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
+        xmlns:local="clr-namespace:QuadcopterSimulation.View"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="QuadcopterSimulation.MainWindow"
+        Title="Моделирование" Height="710" Width="1048">
+    <Window.Resources>
+        <local:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+    </Window.Resources>
+    <Grid>
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="0.5*"/>
+    		<RowDefinition Height="0.5*"/>
+    	</Grid.RowDefinitions>
+    	<Grid.ColumnDefinitions>
+    		<ColumnDefinition Width="0.5*"/>
+    		<ColumnDefinition Width="0.5*"/>
+    	</Grid.ColumnDefinitions>
+		
+        <d3:ChartPlotter x:Name="RotorSpeedPlotter" Grid.Row="2">
+            <d3:Header FontFamily="Georgia" Content="Скорость моторов"/>
+            <d3:VerticalAxisTitle FontFamily="Georgia" FontSize="10" Content="Скорость [об/мин]" />
+            <d3:HorizontalAxisTitle FontFamily="Georgia" FontSize="10" Content="Время"/>
+            <d3:LineGraph x:Name="FirstMotorGraph"  Stroke="Blue" StrokeThickness="1" DataSource="{Binding Environment.FirstMotorSpeed}"/>
+            <d3:LineGraph x:Name="SecondMotorGraph"  Stroke="Green" StrokeThickness="1" DataSource="{Binding Environment.SecondMotorSpeed}"/>
+            <d3:LineGraph x:Name="ThirdMotorGraph"  Stroke="Red" StrokeThickness="1" DataSource="{Binding Environment.ThirdMotorSpeed}"/>
+            <d3:LineGraph x:Name="FourthMotorGraph"  Stroke="Purple" StrokeThickness="1"  DataSource="{Binding Environment.FourthMotorSpeed}"/>
+        </d3:ChartPlotter>
+		
+		<d3:ChartPlotter x:Name="AnglesPlotter">
+            <d3:Header FontFamily="Georgia" Content="Углы Эйлера"/>
+            <d3:VerticalAxisTitle FontFamily="Georgia" FontSize="10" Content="Угол [рад.]" />
+            <d3:HorizontalAxisTitle FontFamily="Georgia" FontSize="10" Content="Время"/>
+            <d3:LineGraph x:Name="Roll"  Stroke="Blue" StrokeThickness="1" DataSource="{Binding Environment.Roll}"/>
+            <d3:LineGraph x:Name="Pitch"  Stroke="Green" StrokeThickness="1" DataSource="{Binding Environment.Pitch}"/>
+            <d3:LineGraph x:Name="Yaw"  Stroke="Red" StrokeThickness="1" DataSource="{Binding Environment.Yaw}"/>
+        </d3:ChartPlotter>
+		
+		<d3:ChartPlotter x:Name="CoordinatesPlotter" Grid.Column="2">
+            <d3:Header FontFamily="Georgia" Content="Координаты"/>
+            <d3:VerticalAxisTitle FontFamily="Georgia" FontSize="10" Content="Лин. коорд. [м]" />
+            <d3:HorizontalAxisTitle FontFamily="Georgia" FontSize="10" Content="Время"/>
+            <d3:LineGraph x:Name="XCoordinate"  Stroke="Blue" StrokeThickness="1" DataSource="{Binding Environment.XCoordinate}"/>
+            <d3:LineGraph x:Name="YCoordinate"  Stroke="Green" StrokeThickness="1" DataSource="{Binding Environment.YCoordinate}"/>
+            <d3:LineGraph x:Name="ZCoordinate"  Stroke="Red" StrokeThickness="1" DataSource="{Binding Environment.ZCoordinate}">
+            </d3:LineGraph>
+        </d3:ChartPlotter>
+		<StackPanel VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Margin="0">
+			<StackPanel Margin="8,0" Orientation="Horizontal" VerticalAlignment="Top">
+<!--
+		<CheckBox Content="Использовать регулятор" Grid.Column="1" HorizontalAlignment="Left" Margin="8,205,8,8" Grid.Row="1" VerticalAlignment="Top"/>-->
+				<GroupBox Header="Параметры квадрокоптера" Margin="0" Padding="8">
+					<StackPanel Orientation="Horizontal">
+						<StackPanel>
+							<DockPanel VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="m:" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="0,3"/>
+								<TextBox Text="{Binding Frame.Mass}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+							<DockPanel Margin="0,8,0,0" VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="l:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox Text="{Binding Frame.ArmLength}" TextWrapping="Wrap" Margin="0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+							<DockPanel Margin="0,8,0,0" VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="k:" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox Text="{Binding RotorGroup.LiftCoef}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+							<DockPanel Margin="0,8,0,0" VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="b:" Padding="0,3"/>
+								<TextBox Text="{Binding RotorGroup.DragCoef}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+						</StackPanel>
+						<StackPanel Margin="8,0,0,0">
+							<DockPanel VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="Ixx:" Padding="0,3"/>
+								<TextBox Text="{Binding Frame.Ixx}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+							<DockPanel Margin="0,8,0,0" VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="Iyy:" Padding="0,3"/>
+								<TextBox Text="{Binding Frame.Iyy}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+							<DockPanel Margin="0,8,0,0" VerticalAlignment="Top">
+								<TextBlock TextWrapping="Wrap" Text="Izz:" Padding="0,3"/>
+								<TextBox Text="{Binding Frame.Izz}" TextWrapping="Wrap" Margin="8,0,0,0" Width="50" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							</DockPanel>
+						</StackPanel>
+					</StackPanel>
+				</GroupBox>
+				<GroupBox Header="Параметры контроллера" VerticalAlignment="Top" Padding="8" Margin="8,0,0,0" IsEnabled="{Binding IsChecked, ElementName=checkBox}">
+					<StackPanel Orientation="Horizontal">
+						<StackPanel>
+							<TextBlock Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="0,2"/>
+							<TextBlock TextWrapping="NoWrap" Text="Kp:" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+							<TextBlock TextWrapping="NoWrap" Margin="0,8,0,0" HorizontalAlignment="Left" Text="Kd:" VerticalAlignment="Top" Padding="0,3"/>
+							<TextBlock TextWrapping="NoWrap" Margin="0,8,0,0" Height="19.96" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"><Run Text="Ki:"/></TextBlock>
+						</StackPanel>
+						<StackPanel Margin="8,0,0,0">
+							<TextBlock TextWrapping="Wrap" Text="Тяга" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,3"/>
+							<TextBox Text="{Binding Controller.ThrustPropCoef}" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center" Width="50" Margin="0,8,0,0"/>
+							<TextBox TextWrapping="Wrap" Text="{Binding Controller.ThrustDifCoef}" HorizontalAlignment="Left" Width="50" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.ThrustIntCoef}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0" Width="50"/>
+						</StackPanel>
+						<StackPanel Margin="8,0,0,0">
+							<TextBlock TextWrapping="NoWrap" Text="Крен" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,3"/>
+                            <TextBox TextWrapping="NoWrap" Text="{Binding Controller.RollPropCoef}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="50" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="NoWrap" Text="{Binding Controller.RollDifCoef}" HorizontalAlignment="Left" Width="50" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="NoWrap" Text="{Binding Controller.RollIntCoef}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0" Width="50"/>
+						</StackPanel>
+						<StackPanel Margin="8,0,0,0">
+							<TextBlock TextWrapping="Wrap" Text="Тангаж" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,3"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.PitchPropCoef}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="50" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.PitchDifCoef}" HorizontalAlignment="Left" Width="50" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.PitchIntCoef}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0" Width="50"/>
+						</StackPanel>
+						<StackPanel Margin="8,0,0,0">
+							<TextBlock TextWrapping="Wrap" Text="Рыск" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="0,3"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.YawPropCoef}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="50" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.YawDifCoef}" HorizontalAlignment="Left" Width="50" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Controller.YawIntCoef}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0" Width="50"/>
+						</StackPanel>
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
+			<StackPanel VerticalAlignment="Top" Margin="8,0" Orientation="Horizontal">
+				<GroupBox Header="Начальное положение" VerticalAlignment="Top" Margin="0" Padding="8" HorizontalAlignment="Left">
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+						<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+							<DockPanel LastChildFill="False">
+								<TextBlock TextWrapping="Wrap" Text="X:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.XInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" Width="50" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="8,0,0,0"/>
+							</DockPanel>
+							<DockPanel LastChildFill="False" Margin="0,8,0,0">
+								<TextBlock TextWrapping="Wrap" Text="Крен:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.RollInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Margin="8,0,0,0"/>
+							</DockPanel>
+						</StackPanel>
+						<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0">
+							<DockPanel LastChildFill="False">
+								<TextBlock TextWrapping="Wrap" Text="Y:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.YInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" Width="50" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="8,0,0,0"/>
+							</DockPanel>
+							<DockPanel LastChildFill="False" Margin="0,8,0,0">
+								<TextBlock TextWrapping="Wrap" Text="Танг:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.PitchInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Margin="8,0,0,0"/>
+							</DockPanel>
+						</StackPanel>
+						<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0">
+							<DockPanel LastChildFill="False">
+								<TextBlock TextWrapping="Wrap" Text="Z:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.ZInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" Width="50" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="8,0,0,0"/>
+							</DockPanel>
+							<DockPanel LastChildFill="False" Margin="0,8,0,0">
+								<TextBlock TextWrapping="Wrap" Text="Рыск:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+                                <TextBox Text="{Binding Frame.YawInitial}" TextWrapping="NoWrap" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Margin="8,0,0,0"/>
+							</DockPanel>
+						</StackPanel>
+					</StackPanel>
+				</GroupBox>
+                <GroupBox Header="Скорость двигателей" Padding="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,0,0,0" IsEnabled="{Binding IsChecked, ElementName=checkBox, Converter={StaticResource ReverseBoolConverter}}">
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+						<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+							<DockPanel LastChildFill="False">
+								<TextBlock TextWrapping="Wrap" Text="w1:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox  Text="{Binding Controller.RPM1}" TextWrapping="Wrap" VerticalAlignment="Center" Width="50" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="8,0,0,0"/>
+							</DockPanel>
+							<DockPanel LastChildFill="False" Margin="0,8,0,0">
+								<TextBlock TextWrapping="Wrap" Text="w2:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox Text="{Binding Controller.RPM2}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Margin="8,0,0,0"/>
+							</DockPanel>
+						</StackPanel>
+						<StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0">
+							<DockPanel LastChildFill="False">
+								<TextBlock TextWrapping="Wrap" Text="w3:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox Text="{Binding Controller.RPM3}" TextWrapping="Wrap" VerticalAlignment="Center" Width="50" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="8,0,0,0"/>
+							</DockPanel>
+							<DockPanel LastChildFill="False" Margin="0,8,0,0">
+								<TextBlock TextWrapping="Wrap" Text="w4:" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,3"/>
+								<TextBox Text="{Binding Controller.RPM4}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Margin="8,0,0,0"/>
+							</DockPanel>
+						</StackPanel>
+					</StackPanel>
+				</GroupBox>
+			</StackPanel>
+			<StackPanel Margin="8,8,8,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+				<CheckBox x:Name="checkBox" IsChecked="{Binding Controller.IsControllerEnabled}" Content="Использовать контроллер" HorizontalAlignment="Left" Margin="0,0,0,-0.001" d:LayoutOverrides="Height"/>
+				<DockPanel LastChildFill="False" Margin="0,8,0,0" HorizontalAlignment="Left">
+					<TextBlock TextWrapping="Wrap" Text="Шаг моделирования:" VerticalAlignment="Top" Margin="0" d:LayoutOverrides="VerticalAlignment" Padding="0,3" Width="128.6"/>
+					<TextBox Text="{Binding Environment.SamplingPeriod, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Width="75" Margin="8,0,0,0" VerticalAlignment="Center"/>
+				</DockPanel>
+				<DockPanel LastChildFill="False" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,8,0,0">
+					<TextBlock TextWrapping="Wrap" Text="Время моделирования:" VerticalAlignment="Center" Padding="0,3"/>
+					<TextBox Text="{Binding Environment.SimulationTime, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" VerticalAlignment="Center" Width="75" Margin="8,0,0,0"/>
+					<Button Command="{Binding RunSimulationCommand}" Content="Моделировать" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top" Margin="8,0,0,0"/>
+				</DockPanel>
+			</StackPanel>
+		</StackPanel>
+		<!--
+		<CheckBox Content="Использовать регулятор" Grid.Column="1" HorizontalAlignment="Left" Margin="8,205,8,8" Grid.Row="1" VerticalAlignment="Top"/>-->
+    </Grid>
+</Window>
